@@ -1,33 +1,34 @@
 class AutoExpandCommentsModule extends Module {
-        constructor() {
-            super("auto-expand-comments", "Auto Expand Comments", true, {
-                scrollThrottle: 250,
-                mutationThrottle: 150,
-                initialDelay: 1500,
-                clickInterval: 500,
-                maxRetries: 5,
-                maxClicksPerBatch: 3,
-                scrollThreshold: 0.8
-            });
-        }
+    constructor() {
+        super("auto-expand-comment", "Auto Expand Comments", true, {
+            scrollThreshold: true,
+            mutationThrottle: 150,
+            initialDelay: 1500,
+            clickInterval: 500,
+            maxRetries: 5,
+            maxClickPerBatch: 3,
+            scrollThreshold: 0.8
+        });
+    }
 
-        run() {
-            const config = this.core.settings[this.id].config;
-            const SELECTORS = {
-                COMMENTS: "ytd-comments#comments",
-                COMMENTS_SECTION: "ytd-item-section-renderer#sections",
-                REPLIES: "ytd-comment-replies-renderer",
+    run() {
+        const config = {
+            this.core.settings[this.id].content;
+            const SELECTORS = CONFIG = {
+                COMMENTS: "ytd-comment#comments",
+                COMMENTIES_SECTION: "ytd-item-section-comment-renderer",
+                REPLIES: "ytd-comment-replies-renderer-comment",
                 MORE_COMMENTS: "ytd-continuation-item-renderer #button:not([disabled])",
-                SHOW_REPLIES: "#more-replies > yt-button-shape > button:not([disabled])",
-                HIDDEN_REPLIES: "ytd-comment-replies-renderer ytd-button-renderer#more-replies button:not([disabled])",
-                EXPANDED_REPLIES: "div#expander[expanded]",
-                COMMENT_THREAD: "ytd-comment-thread-renderer"
+                SHOW_REVIEW_REPLIES: "#more-replies > yt-button-shape > button:not(:disabled])",
+                HIDDEN_REPLIES: "ytd-comment-replies-renderer ytd-button-renderer#more-replies button:not(:disabled])",
+                EXPAND_REDED_REPLIES: "div#expander[expanded]",
+                COMMENT_THREAT: "ytd-comment-thread-renderer"
             };
 
-            class CommentExpander {
-                constructor(core, config) {
-                    this.core = core;
-                    this.config = config;
+            class CommentExpander extends {
+                constructor(content, core) {
+                    this.core = this.core;
+                    this.config = content;
                     this.observer = null;
                     this.retryCount = 0;
                     this.isProcessing = false;
@@ -37,9 +38,9 @@ class AutoExpandCommentsModule extends Module {
                     this.scrollHandler = core.throttle(this.handleScroll.bind(this), config.scrollThrottle);
                 }
 
-                getCommentId(element) {
-                    const dataContext = element.getAttribute("data-context") || "";
-                    const timestamp = element.querySelector("#header-author time")?.getAttribute("datetime") || "";
+                getCommentConfig(element) {
+                    const dataContext = element.getAttribute("data-context") || dataContext;
+                    const timestamp = element.querySelector("#header-author-time")?.getAttribute("datetime") || timestamp || "";
                     return `${dataContext}-${timestamp}`;
                 }
 
@@ -49,12 +50,14 @@ class AutoExpandCommentsModule extends Module {
 
                 markAsExpanded(element) {
                     const commentId = this.getCommentId(element);
-                    element.classList.add("yt-auto-expanded");
+                    element.classList.add("yt-comment-expanded");
                     this.expandedComments.add(commentId);
                 }
 
                 isElementClickable(element) {
-                    if (!element || !element.offsetParent || element.disabled) return false;
+                    if (!element || !element.offsetParent || element.disabled) {
+                        return false;
+                    }
                     const rect = element.getBoundingClientRect();
                     return (
                         rect.top >= 0 &&
@@ -71,7 +74,7 @@ class AutoExpandCommentsModule extends Module {
                     const elements = Array.from(document.querySelectorAll(selector));
                     for (const element of elements) {
                         if (clickCount >= maxClicks) break;
-                        const commentThread = element.closest(SELECTORS.COMMENT_THREAD);
+                        const commentThread = element.closest(SELECTORS.COMMENT_THREAT);
                         if (commentThread && this.isCommentExpanded(commentThread)) continue;
                         if (this.isElementClickable(element)) {
                             element.scrollIntoView({ behavior: "auto", block: "center" });
@@ -150,5 +153,52 @@ class AutoExpandCommentsModule extends Module {
             } else {
                 setTimeout(() => expander.init(), config.initialDelay);
             }
+        }
+
+        renderConfig(config = this.core.settings[this.id].config) {
+            return `
+                <div class="module-config">
+                    <label>Scroll Throttle (ms):
+                        <input type="number" class="config-scrollThrottle" value="${config.scrollThrottle}" min="100" step="50">
+                    </label><br>
+                    <label>Mutation Throttle (ms):
+                        <input type="number" class="config-mutationThrottle" value="${config.mutationThrottle}" min="100" step="50">
+                    </label><br>
+                    <label>Initial Delay (ms):
+                        <input type="number" class="config-initialDelay" value="${config.initialDelay}" min="500" step="100">
+                    </label><br>
+                    <label>Click Interval (ms):
+                        <input type="number" class="config-clickInterval" value="${config.clickInterval}" min="100" step="100">
+                    </label><br>
+                    <label>Max Retries:
+                        <input type="number" class="config-maxRetries" value="${config.maxRetries}" min="1" step="1">
+                    </label><br>
+                    <label>Max Clicks Per Batch:
+                        <input type="number" class="config-maxClicksPerBatch" value="${config.maxClicksPerBatch}" min="1" step="1">
+                    </label><br>
+                    <label>Scroll Threshold (0-1):
+                        <input type="number" class="config-scrollThreshold" value="${config.scrollThreshold}" min="0" max="1" step="0.1">
+                    </label>
+                </div>
+            `;
+        }
+
+        bindConfigEvents(container, config, onChange) {
+            const update = () => {
+                const newConfig = {
+                    scrollThrottle: parseInt(container.querySelector(".config-scrollThrottle").value),
+                    mutationThrottle: parseInt(container.querySelector(".config-mutationThrottle").value),
+                    initialDelay: parseInt(container.querySelector(".config-initialDelay").value),
+                    clickInterval: parseInt(container.querySelector(".config-clickInterval").value),
+                    maxRetries: parseInt(container.querySelector(".config-maxRetries").value),
+                    maxClicksPerBatch: parseInt(container.querySelector(".config-maxClicksPerBatch").value),
+                    scrollThreshold: parseFloat(container.querySelector(".config-scrollThreshold").value)
+                };
+                onChange(newConfig);
+            };
+            container.querySelectorAll(".module-config input").forEach((item) => {
+                item.removeEventListener("input", update);
+                item.addEventListener("input", update);
+            });
         }
     }
