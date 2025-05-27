@@ -240,14 +240,14 @@ class DirectDownloaderModule extends Module {
                             status.textContent = "Error: API service might be temporarily unavailable";
                         }
                     },
-                    onerror: () => (status.textContent = "Network error. Please check your connection");
+                    onerror: () => { status.textContent = "Network error. Please check your connection"; }
                 });
             }
 
             const interceptDownload = () => {
                 const { dialog, backdrop, switchButton, content, videoOptions, audioOptions, qualityOptions, downloadOptions, downloadStatus, buttonContainer, cancelButton, downloadButton, dub, dubSelect } = createDialog();
                 let isAudioMode = config.mode === "audio";
-                const updateQualityOptions(dialog, config.videoCodec, config.quality);
+                updateQualityOptions(dialog, config.videoCodec, config.quality);
                 updateAudioOptions(dialog, config.audioCodec, config.bitrate || "320kbps");
                 videoOptions.style.display = isAudioMode ? "none" : "block";
                 audioOptions.style.display = isAudioMode ? "block" : "none";
@@ -282,7 +282,7 @@ button.classList.add("selected");
                 dubSelect.addEventListener("change", () => {
                     config.dub = dubSelect.value;
                     this.core.updateConfig(this.id, config);
-                }));
+                });
 
                 cancelButton.addEventListener("click", () => dialog.parentNode.removeChild(dialog) && backdrop.parentNode.removeChild(backdrop));
                 downloadButton.addEventListener("click", () => {
@@ -308,7 +308,7 @@ button.classList.add("selected");
                         };
                         downloadContent(payload, dialog, backdrop);
                     }
-                }));
+                });
 
                 document.body.appendChild(dialog);
             };
