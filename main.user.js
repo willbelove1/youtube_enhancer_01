@@ -8,19 +8,20 @@
 // @grant        GM_setValue
 // @grant        GM_registerMenuCommand
 // @grant        GM_xmlhttpRequest
-// @require      file://./core/YouTubeEnhancerCore.js
-// @require      file://./modules/RemoveShareIdentifier.js
-// @require      file://./modules/YouTubePlus.js
-// @require      file://./modules/PremiumLogo.js
-// @require      file://./modules/AutoExpandComments.js
-// @require      file://./modules/DirectDownloader.js
-// @require      file://./modules/AdBlock.js
+// @require      https://raw.githubusercontent.com/willbelove1/youtube_enhancer_01/refs/heads/main/YouTubeEnhancerCore.js
+// @require      https://raw.githubusercontent.com/willbelove1/youtube_enhancer_01/refs/heads/main/RemoveShareIdentifier.js
+// @require      https://raw.githubusercontent.com/willbelove1/youtube_enhancer_01/refs/heads/main/YouTubePlus.js
+// @require      https://raw.githubusercontent.com/willbelove1/youtube_enhancer_01/refs/heads/main/PremiumLogo.js
+// @require      https://raw.githubusercontent.com/willbelove1/youtube_enhancer_01/refs/heads/main/AutoExpandComments.js
+// @require      https://raw.githubusercontent.com/willbelove1/youtube_enhancer_01/refs/heads/main/DirectDownloader.js
+// @require      https://raw.githubusercontent.com/willbelove1/youtube_enhancer_01/refs/heads/main/AdBlock.js
 // @license      MIT
 // ==/UserScript==
 
 (function () {
     'use strict';
     const core = new YouTubeEnhancerCore();
+    //core.registerModule(new YouTubeEnhancerCore());
     core.registerModule(new RemoveShareIdentifierModule());
     core.registerModule(new YouTubePlusModule());
     core.registerModule(new PremiumLogoModule());
